@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aresta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,400..900&display=swap" />
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three/three.module.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <main id="menu">
+    <div class="shard">
+      <h1>ARESTA</h1>
+      <p class="pitch">Arena multiplayer em low poly. Escolha um nome e entre na partida.</p>
+      <fieldset class="loadout">
+        <legend>Arma</legend>
+        <label><input type="radio" name="arma" value="0" checked /><span><b>Fuzil</b><small>Automático. Vai bem em quase tudo.</small></span></label>
+        <label><input type="radio" name="arma" value="1" /><span><b>Sniper</b><small>Mire com o botão direito. Na cabeça derruba.</small></span></label>
+        <label><input type="radio" name="arma" value="2" /><span><b>Escopeta</b><small>Arrasa de perto. De longe, quase nada.</small></span></label>
+      </fieldset>
+      <div class="join">
+        <label class="sr-only" for="name">Seu nome</label>
+        <input id="name" maxlength="16" placeholder="Seu nome" autocomplete="nickname" spellcheck="false" autofocus />
+        <button id="play" type="button">Entrar na arena</button>
+      </div>
+      <p id="menu-msg" role="status" aria-live="polite"></p>
+      <dl class="keys">
+        <div><dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dt><dd>andar</dd></div>
+        <div><dt><kbd>Espaço</kbd></dt><dd>pular</dd></div>
+        <div><dt><kbd>R</kbd></dt><dd>recarregar</dd></div>
+        <div><dt><kbd>Mouse esq.</kbd></dt><dd>atirar</dd></div>
+        <div><dt><kbd>Mouse dir.</kbd></dt><dd>mirar</dd></div>
+        <div><dt><kbd>V</kbd></dt><dd>faca</dd></div>
+        <div><dt><kbd>G</kbd></dt><dd>granada</dd></div>
+        <div><dt><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd></dt><dd>próxima arma</dd></div>
+        <div><dt><kbd>Tab</kbd></dt><dd>placar</dd></div>
+        <div><dt><kbd>Enter</kbd></dt><dd>chat</dd></div>
+      </dl>
+      <p class="touch-note">Para jogar você precisa de teclado e mouse.</p>
+    </div>
+  </main>
+
+  <div id="hud" hidden>
+    <div id="scope" hidden></div>
+    <div id="crosshair"><i></i><i></i><i></i><i></i></div>
+    <div id="hitmarker"><i></i><i></i><i></i><i></i></div>
+    <div id="vignette"></div>
+
+    <div id="status"></div>
+    <div id="markers"></div>
+    <div id="match-bar" hidden></div>
+    <div id="match-end" hidden><p id="match-end-title"></p><p id="match-end-sub"></p></div>
+    <div id="capture" hidden><span id="capture-label"></span><div class="bar"><div id="capture-fill"></div></div></div>
+    <p id="flag-note" hidden></p>
+    <p id="spectate" hidden></p>
+
+    <div id="chat">
+      <div id="chat-log" aria-live="polite"></div>
+      <label class="sr-only" for="chat-input">Mensagem</label>
+      <input id="chat-input" maxlength="120" placeholder="Enter envia, Esc cancela" autocomplete="off" spellcheck="false" hidden />
+    </div>
+    <div id="killfeed" aria-live="polite"></div>
+
+    <div id="health" class="plate">
+      <span class="glyph" aria-hidden="true"></span>
+      <span id="hp-num" class="num">100</span>
+      <div class="bar"><div id="hp-fill"></div></div>
+    </div>
+
+    <div id="ammo" class="plate">
+      <span id="weapon-name">Fuzil</span>
+      <div class="count"><span id="ammo-num" class="num">30</span><span id="ammo-max" class="max">/30</span></div>
+      <div id="nades" title="Granadas (G)"><i></i><i></i></div>
+      <span id="reload-note" hidden>Recarregando</span>
+    </div>
+
+    <div id="toast" aria-live="polite"></div>
+
+    <div id="death" hidden>
+      <p id="death-by">Você foi abatido</p>
+      <p id="death-timer"></p>
+      <div id="next-weapon">
+        <span>Voltar com</span>
+        <span class="chip" data-w="0"><kbd>1</kbd> Fuzil</span>
+        <span class="chip" data-w="1"><kbd>2</kbd> Sniper</span>
+        <span class="chip" data-w="2"><kbd>3</kbd> Escopeta</span>
+      </div>
+    </div>
+
+    <div id="scoreboard" class="plate" hidden>
+      <table>
+        <thead><tr><th>Jogador</th><th class="wins">Vitórias</th><th>Abates</th><th>Mortes</th></tr></thead>
+        <tbody id="board-rows"></tbody>
+      </table>
+    </div>
+
+    <div id="vote" hidden>
+      <p id="vote-title">Vote no próximo modo</p>
+      <div id="vote-cards"></div>
+      <p id="vote-hint"></p>
+    </div>
+
+    <div id="pause" hidden>
+      <div class="plate">
+        <p class="big">Pausado</p>
+        <p>Clique para voltar. A partida continua rolando enquanto você está fora.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

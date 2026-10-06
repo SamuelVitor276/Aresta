@@ -1,0 +1,3 @@
+client/public/vendor/
+*.exe
+/server/aresta-server

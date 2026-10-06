@@ -1,0 +1,35 @@
+services:
+  # Servidor autoritativo em Go (não fica exposto: só o nginx fala com ele)
+  server:
+    build: ./server
+    environment:
+      MODO: "tdm"   # primeiro modo: ffa, tdm, dom, koth, ctf ou lms (depois a turma vota)
+      BOTS: "6"     # tamanho da sala: bots completam o que faltar (0 desliga)
+      MAPA: "vila"  # "vila" (feito à mão) ou "arena" (pequena e sorteada)
+      MAP_SEED: "1337"   # só vale para a arena: muda o sorteio
+    restart: unless-stopped
+
+  # Página do jogo + proxy do WebSocket
+  client:
+    build: ./client
+    ports:
+      - "8080:80"        # abra http://localhost:8080
+    depends_on:
+      - server
+    restart: unless-stopped
+    # Para editar o JS sem rebuildar a imagem, descomente e é só dar F5:
+    # volumes:
+    #   - ./client/public/js:/usr/share/nginx/html/js:ro
+    #   - ./client/public/index.html:/usr/share/nginx/html/index.html:ro
+    #   - ./client/public/style.css:/usr/share/nginx/html/style.css:ro
+
+  # Link público temporário (Cloudflare Quick Tunnel): sem conta, sem domínio,
+  # sem abrir porta no roteador. Só sobe quando você pede:
+  #   docker compose --profile tunel up --build
+  # O link https://...trycloudflare.com aparece no log e muda a cada subida.
+  tunel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate --url http://client:80
+    depends_on:
+      - client
+    profiles: ["tunel"]
